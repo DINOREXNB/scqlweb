@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scql</title>
+    <link rel="stylesheet" href="/css/hall.css">
+    <link rel="icon" href="/images/scql.ico">
+</head>
+<body>
+    <div class="header">
+        <h1>scql</h1>
+    </div>
+
+    <div class="btn-container">
+        <button class="btn" id="import">选择sql文件</button>
+        <button class="btn" id="shortinstruction">快捷指令</button>
+        <button class="btn" id="history">历史会话</button>
+        <button class="btn" id="clear">清空对话</button>
+        <button class="btn" id="logout">退出</button>
+    </div>
+    <div id="floatingWindow" class="hidden">
+        <div id="floatingWindowContent">
+            <h2>快捷指令</h2>
+            <button class="btn" id="q0">SHOW DATABASES;</button>
+            <button class="btn" id="q1">DESCRIBE&nbsp;</button>
+            <button class="btn" id="q2">SELECT * FROM&nbsp;</button>
+            <button class="btn" id="closeFloatingWindow">关闭</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="chatbox" id="chatbox">
+            <div class="container">
+                <div class="chatbox" id="chatbox">
+                    <div class="interaction" id="interaction">
+                        <!-- <div class="spinner" id="spinner"></div> -->
+                    </div>
+                    <div class="mailbox">
+                        <textarea name="" id="query" cols="30" rows="10" class="comment" placeholder="Input your query!"></textarea>
+                        <button id="send" class="btn">发送</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/js/hall.js"></script>
+</html>

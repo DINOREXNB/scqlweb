@@ -1,0 +1,13 @@
+# 数据库配置
+mysql:
+ host: 'localhost'
+ port: 3306
+ user: 'root'
+ password: 'WangHan@520'
+ database: 'scql'
+
+# 服务器配置
+server:
+ host: "localhost"
+ port: 80
+ location: "http://scql.cpolar.top" 
