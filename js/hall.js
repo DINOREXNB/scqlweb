@@ -10,6 +10,7 @@ const interaction=document.getElementById('interaction');
 const query=document.getElementById('query');
 const fileimport=document.createElement('input');
 const shortinstruction=document.getElementById('shortinstruction');
+const ccl=document.getElementById('ccl');
 fileimport.type = "file";
 fileimport.style.display="none";
 let shortcut_instruction=[
@@ -44,20 +45,21 @@ send.addEventListener('click',async()=>{
         interaction.innerHTML+=`
             <code style="color: yellow;">${account}:</code><br>
             <code>${edittext}</code><br>
+            <div class="spinner" id="spinner"></div>
         `;
         interaction.scrollTop=interaction.scrollHeight;
         //处理请求逻辑
         submit_get(text);
-        let res=`
-            <code style="color: yellow;">SCDB:</code>
-            <code>+----------+
-            | Database |
-            +----------+
-            | demo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-            +----------+
-            </code>
-        `
-        interaction.innerHTML+=res.replace(/\n/g, "<br>");
+        // let res=`
+        //     <code style="color: yellow;">SCDB:</code>
+        //     <code>+----------+
+        //     | Database |
+        //     +----------+
+        //     | demo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+        //     +----------+
+        //     </code>
+        // `
+        // interaction.innerHTML+=res.replace(/\n/g, "<br>");
         interaction.scrollTop=interaction.scrollHeight;
     }
 });
@@ -104,6 +106,12 @@ clear.addEventListener('click',()=>{
        interaction.innerHTML="";
     }
 });
+history.addEventListener('click',()=>{
+    alert('在做了在做了（');
+});
+ccl.addEventListener('click',()=>{
+    alert('在做了在做了（');
+});
 async function submit_get(text){
     try{
         let request={
@@ -115,11 +123,18 @@ async function submit_get(text){
             body:JSON.stringify(request)
         })
         const data=await response.json();
-        console.log(body);
+        document.getElementById('spinner').remove();
+        interaction.innerHTML+=`
+            <code style="color: yellow;">SCDB:</code><br>
+            <code>${data.status.message}</code><br>
+        `;
     }catch(error){
         console.log(error);
         return null;
     }
+}
+function processResponse(){
+
 }
 //快捷指令
 document.addEventListener("keydown", function(event) {

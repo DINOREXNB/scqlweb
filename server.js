@@ -181,37 +181,51 @@ app.get('/logout',(req,res)=>{
 });
 app.post('/submit_get',(req,res)=>{
   let body="";
+  let password="";
   req.on('data',(chunk)=>{
     body+=chunk.toString();
   });
   req.on('end',()=>{
     body=JSON.parse(body);
-    let data={
-      "user": {
+    sql_getpassword=`SELECT * FROM`+" `userinfo` WHERE account="+`"${body.account}"`;
+    connectInfo.query(sql_getpassword,(err,result,field)=>{
+      if(err){
+        console.log(`[SELECT ERROR] - ${err.message}`);
+        return;
+      }
+      if(result.length!=0){
+        password=result[0].password;
+        let data={
           "user": {
-              "account_system_type": "NATIVE_USER",
-              "native_user": { 
-                "name": body.account, 
-                "password": "somepassword" 
+              "user": {
+                  "account_system_type": "NATIVE_USER",
+                  "native_user": { 
+                    "name": body.account, 
+                    "password": password 
+                  }
               }
-          }
-      },
-      "query": body.query,
-      "biz_request_id": "",
-      "db_name": "scdb"
-    }
-    console.dir(data,{depth:null});
-    //SCDB HOST待部署
-    // axios.post('https://api.example.com/data',data)
-    // .then(response => {
-    //   console.dir(response.data,{depth:null});
-    // })
-    // .catch(error => {
-    //   console.error(error);
-    // });
+          },
+          "query": body.query,
+          "biz_request_id": "",
+          "db_name": "scdb"
+        }
+        console.log("-------------------------------");
+        console.log("查询请求:")
+        console.dir(data,{depth:null});
+        //SCDB HOST待部署
+        axios.post('http://localhost:8003/public/submit_and_get',data)
+        .then(response => {
+          console.log("-------------------------------");
+          console.log("回复生成:")
+          console.dir(response.data,{depth:null});
+          const data=response.data;
+          res.json(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      }
+    });
   });
-  res.json({
-    "status":"success"
-  })
 });
 
