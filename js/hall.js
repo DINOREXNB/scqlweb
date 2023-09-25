@@ -13,9 +13,11 @@ const fileimport=document.createElement('input');
 const shortinstruction=document.getElementById('shortinstruction');
 const ccl=document.getElementById('ccl');
 const showdb=document.getElementById('showdb')
+const exportcsv=document.getElementById('exportcsv');
 fileimport.type = "file";
 fileimport.style.display="none";
 var maxlength=12;
+let selectedText="";
 async function getAccount(){
     try{
         const response=await fetch('/getAccount',{
@@ -193,6 +195,35 @@ function processResponse(data){
         interaction.scrollTop=interaction.scrollHeight;
     }
 }
+function getSelectedText(){
+    if(window.getSelection){
+        return window.getSelection().toString();
+    }else if(document.selection && document.selection.type != "Control"){
+        return document.selection.createRange().text;
+    }else{
+        return "";
+    }
+}
+interaction.addEventListener("mouseup",()=>{
+    selectedText=getSelectedText();
+})
+// 导出选定文本为CSV
+document.getElementById("exportcsv").addEventListener("click", function() {
+    if (selectedText) {
+        // 将选定文本转换为CSV格式
+        var csvData = selectedText.replace(/ /g,",");
+        // 创建数据URL并下载CSV文件
+        var csvContent = "data:text/csv;charset=utf-8," + encodeURIComponent(csvData);
+        var link = document.createElement("a");
+        link.setAttribute("href", csvContent);
+        link.setAttribute("download", "data.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } else {
+        alert("请先框选要导出的文本！");
+    }
+});
 //快捷指令
 document.addEventListener("keydown", function(event) {
     const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
