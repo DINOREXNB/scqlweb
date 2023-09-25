@@ -14,6 +14,7 @@ const shortinstruction=document.getElementById('shortinstruction');
 const ccl=document.getElementById('ccl');
 const showdb=document.getElementById('showdb')
 const exportcsv=document.getElementById('exportcsv');
+const help=document.getElementById('help');
 fileimport.type = "file";
 fileimport.style.display="none";
 var maxlength=12;
@@ -107,6 +108,10 @@ clear.addEventListener('click',()=>{
 });
 history.addEventListener('click',()=>{
     alert('在做了在做了（');
+});
+help.addEventListener('click',()=>{
+    var helptext="ctrl/cmd + s：快捷指令\n导出为csv：使用鼠标框选查询数据，点击\"导出为csv\"生成csv文件\n选择sql文件：将提前写好的sql语句快速导入输入框"
+    alert(helptext);
 });
 ccl.addEventListener('click',()=>{
     interaction.innerHTML+=`
