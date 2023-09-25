@@ -10,4 +10,4 @@ mysql:
 server:
  host: "localhost"
  port: 80
- location: "http://scql.cpolar.top" 
+ location: "https://scql.cpolar.top" 

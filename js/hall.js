@@ -1,6 +1,7 @@
 var account="";
 var ishidden=1;
 let isFirstKeyPressed = false;
+let dbname="";
 const send=document.getElementById('send');
 const importfile=document.getElementById('import');
 const clear=document.getElementById('clear');
@@ -11,13 +12,10 @@ const query=document.getElementById('query');
 const fileimport=document.createElement('input');
 const shortinstruction=document.getElementById('shortinstruction');
 const ccl=document.getElementById('ccl');
+const showdb=document.getElementById('showdb')
 fileimport.type = "file";
 fileimport.style.display="none";
-let shortcut_instruction=[
-    document.getElementById('q0').addEventListener('click',()=>{query.value+=document.getElementById('q0').innerText}),
-    document.getElementById('q1').addEventListener('click',()=>{query.value+=document.getElementById('q1').innerText}),
-    document.getElementById('q2').addEventListener('click',()=>{query.value+=document.getElementById('q2').innerText}),
-];
+var maxlength=12;
 async function getAccount(){
     try{
         const response=await fetch('/getAccount',{
@@ -49,17 +47,16 @@ send.addEventListener('click',async()=>{
         `;
         interaction.scrollTop=interaction.scrollHeight;
         //处理请求逻辑
-        submit_get(text);
-        // let res=`
-        //     <code style="color: yellow;">SCDB:</code>
-        //     <code>+----------+
-        //     | Database |
-        //     +----------+
-        //     | demo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-        //     +----------+
-        //     </code>
-        // `
-        // interaction.innerHTML+=res.replace(/\n/g, "<br>");
+        if(edittext.toUpperCase().indexOf("USE")==-1){
+            submit_get(text);
+        }else{
+            dbname=edittext.replace(/;/g,"").replace(/use/g,"").replace(/USE/g,"").replace(/ /g,"").replace(/\n/g,"").replace(/<br>/g,"");
+            document.getElementById('spinner').remove();
+            interaction.innerHTML+=`
+                <code style="color: yellow;">SCDB:</code><code style="color: #0deb53">[Execution Complete]</code><br>
+                <code>Switch to database:<b>${dbname}</b></code><br>
+            `;
+        }
         interaction.scrollTop=interaction.scrollHeight;
     }
 });
@@ -110,13 +107,38 @@ history.addEventListener('click',()=>{
     alert('在做了在做了（');
 });
 ccl.addEventListener('click',()=>{
-    alert('在做了在做了（');
+    interaction.innerHTML+=`
+        <div class="spinner" id="spinner"></div>
+    `;
+    interaction.scrollTop=interaction.scrollHeight;
+    floatingWindow.classList.add("hidden");
+    ishidden=1-ishidden;
+    submit_get(`SHOW GRANTS ON demo FOR ${account}`);
 });
+showdb.addEventListener('click',()=>{
+    interaction.innerHTML+=`
+        <div class="spinner" id="spinner"></div>
+    `;
+    interaction.scrollTop=interaction.scrollHeight;
+    floatingWindow.classList.add("hidden");
+    ishidden=1-ishidden;
+    submit_get(`SHOW DATABASES;`);
+})
+function padWithSpaces(inputString, desiredLength) {
+    if (inputString.length >= desiredLength) {
+        return inputString; // 字符串长度已达到或超过目标长度，不需要补齐
+    } else {
+        const spacesToAdd = desiredLength - inputString.length;
+        const spaces = '&nbsp;'.repeat(spacesToAdd); // 创建需要的空格
+        return inputString + spaces; // 将空格添加到字符串末尾
+    }
+}
 async function submit_get(text){
     try{
         let request={
             "account":account,
-            "query":text
+            "query":text,
+            "dbname":dbname
         }
         const response=await fetch('/submit_get',{
             method:'POST',
@@ -124,17 +146,52 @@ async function submit_get(text){
         })
         const data=await response.json();
         document.getElementById('spinner').remove();
-        interaction.innerHTML+=`
-            <code style="color: yellow;">SCDB:</code><br>
-            <code>${data.status.message}</code><br>
-        `;
+        processResponse(data)
     }catch(error){
         console.log(error);
         return null;
     }
 }
-function processResponse(){
-
+function processResponse(data){
+    if(data.status.code==0){
+        interaction.innerHTML+=`
+            <code style="color: yellow;">SCDB:</code><code style="color: #0deb53">[Execution Complete]</code><br>
+        `;
+        for(var j=0;j<data.out_columns.length;j++){
+            var temp=padWithSpaces(data.out_columns[j].name,maxlength);
+            interaction.innerHTML+=`<code style="color: yellow;"><b>${temp}</b></code>\t`;
+        }
+        interaction.innerHTML+="<br>";
+        for(var i=0;i<parseInt(data.out_columns[0].shape.dim[0].dim_value);i++){
+            for(var j=0;j<data.out_columns.length;j++){
+                switch(data.out_columns[j].elem_type){
+                    case "STRING":
+                        var temp=padWithSpaces(data.out_columns[j].string_data[i],maxlength);
+                        interaction.innerHTML+=`<code>${temp}</code>\t`;
+                        break;
+                    case "FLOAT64":
+                        var temp=padWithSpaces(data.out_columns[j].double_data[i],maxlength);
+                        interaction.innerHTML+=`<code>${temp}</code>\t`;
+                        break;
+                    case "INT64":
+                        var temp=padWithSpaces(data.out_columns[j].int64_data[i],maxlength);
+                        interaction.innerHTML+=`<code>${temp}</code>\t`;
+                        break;
+                    default:
+                        console.log("未知数据类型:",data.out_columns[j].elem_type);
+                        break;
+                }
+            }
+            interaction.innerHTML+="<br>";
+            interaction.scrollTop=interaction.scrollHeight;
+        }
+    }else{
+        interaction.innerHTML+=`
+            <code style="color: yellow;">SCDB:</code><code style="color: red">[Execution Fail]</code><br>
+            <code>${data.status.message}</code><br>
+        `;
+        interaction.scrollTop=interaction.scrollHeight;
+    }
 }
 //快捷指令
 document.addEventListener("keydown", function(event) {

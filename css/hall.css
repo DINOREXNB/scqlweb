@@ -144,3 +144,7 @@ button {
 #floatingWindow h2{
     margin-left: 20px;
 }
+
+code{
+    white-space: nowrap;
+}

@@ -207,13 +207,13 @@ app.post('/submit_get',(req,res)=>{
           },
           "query": body.query,
           "biz_request_id": "",
-          "db_name": "scdb"
+          "db_name": body.dbname
         }
         console.log("-------------------------------");
         console.log("查询请求:")
         console.dir(data,{depth:null});
         //SCDB HOST待部署
-        axios.post('http://localhost:8003/public/submit_and_get',data)
+        axios.post('http://localhost:8080/public/submit_and_get',data)
         .then(response => {
           console.log("-------------------------------");
           console.log("回复生成:")
