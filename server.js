@@ -58,7 +58,7 @@ app.get('/', (req,res)=>{
   }else{
     res.sendFile(__dirname+"/"+"html/index.html");
   }
-  console.log("Current Page: index.html");
+  console.log("Current Page:index.html");
 });
 app.get('/hall.html', (req,res)=>{
   res.sendFile(__dirname+"/html/hall.html");
@@ -114,7 +114,6 @@ app.post('/login',(req,res)=>{
     body.push(chunk);
   });
   req.on("end",()=>{
-    req.session.sign = true;
     req.session.name = 'user';
     body = Buffer.concat(body).toString();
     body = querystring.parse(body);
@@ -139,6 +138,7 @@ app.post('/login',(req,res)=>{
           console.log("[INSERT ERROR] - ",err.message);
           return;
         }
+        req.session.sign = true;
         res.redirect(`${location}/hall.html`);
       });
     }else{
@@ -151,6 +151,7 @@ app.post('/login',(req,res)=>{
         if(result.length==0){
           res.redirect(`${location}/loginerror.html`);
         }else{
+          req.session.sign = true;
           res.redirect(`${location}/hall.html`);
         }
       });

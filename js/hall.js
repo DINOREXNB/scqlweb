@@ -17,7 +17,6 @@ const exportcsv=document.getElementById('exportcsv');
 const help=document.getElementById('help');
 fileimport.type = "file";
 fileimport.style.display="none";
-var maxlength=12;
 let selectedText="";
 async function getAccount(){
     try{
@@ -46,11 +45,12 @@ send.addEventListener('click',async()=>{
         interaction.innerHTML+=`
             <code style="color: yellow;">${account}:</code><br>
             <code>${edittext}</code><br>
+            <hr>
             <div class="spinner" id="spinner"></div>
         `;
         interaction.scrollTop=interaction.scrollHeight;
         //处理请求逻辑
-        if(edittext.toUpperCase().indexOf("USE")==-1){
+        if(edittext.toUpperCase().indexOf("USE ")==-1){
             submit_get(text);
         }else{
             dbname=edittext.replace(/;/g,"").replace(/use/g,"").replace(/USE/g,"").replace(/ /g,"").replace(/\n/g,"").replace(/<br>/g,"");
@@ -164,8 +164,23 @@ function processResponse(data){
         interaction.innerHTML+=`
             <code style="color: yellow;">SCDB:</code><code style="color: #0deb53">[Execution Complete]</code><br>
         `;
+        maxlength=[];
+        for(var i=0;i<data.out_columns.length;i++){
+            maxlength.push(0);
+            for(var j=0;j<parseInt(data.out_columns[0].shape.dim[0].dim_value);j++){
+                if(data.out_columns[i].string_data.length!=0){
+                    maxlength[i]=Math.max(maxlength[i],data.out_columns[i].string_data[j].length);
+                }
+                if(data.out_columns[i].double_data.length!=0){
+                    maxlength[i]=Math.max(maxlength[i],data.out_columns[i].double_data[j].toString().length);
+                }
+                if(data.out_columns[i].int64_data.length!=0){
+                    maxlength[i]=Math.max(maxlength[i],parseInt(data.out_columns[i].int64_data[j])+1);
+                }
+            }
+        }
         for(var j=0;j<data.out_columns.length;j++){
-            var temp=padWithSpaces(data.out_columns[j].name,maxlength);
+            var temp=padWithSpaces(data.out_columns[j].name,maxlength[j]);
             interaction.innerHTML+=`<code style="color: yellow;"><b>${temp}</b></code>\t`;
         }
         interaction.innerHTML+="<br>";
@@ -173,15 +188,15 @@ function processResponse(data){
             for(var j=0;j<data.out_columns.length;j++){
                 switch(data.out_columns[j].elem_type){
                     case "STRING":
-                        var temp=padWithSpaces(data.out_columns[j].string_data[i],maxlength);
+                        var temp=padWithSpaces(data.out_columns[j].string_data[i],maxlength[j]);
                         interaction.innerHTML+=`<code>${temp}</code>\t`;
                         break;
                     case "FLOAT64":
-                        var temp=padWithSpaces(data.out_columns[j].double_data[i],maxlength);
+                        var temp=padWithSpaces(data.out_columns[j].double_data[i].toString(),maxlength[j]);
                         interaction.innerHTML+=`<code>${temp}</code>\t`;
                         break;
                     case "INT64":
-                        var temp=padWithSpaces(data.out_columns[j].int64_data[i],maxlength);
+                        var temp=padWithSpaces(data.out_columns[j].int64_data[i].toString(),maxlength[j]);
                         interaction.innerHTML+=`<code>${temp}</code>\t`;
                         break;
                     default:
@@ -192,10 +207,11 @@ function processResponse(data){
             interaction.innerHTML+="<br>";
             interaction.scrollTop=interaction.scrollHeight;
         }
+        interaction.innerHTML+="<hr>"
     }else{
         interaction.innerHTML+=`
             <code style="color: yellow;">SCDB:</code><code style="color: red">[Execution Fail]</code><br>
-            <code>${data.status.message}</code><br>
+            <code>${data.status.message}</code><br><hr>
         `;
         interaction.scrollTop=interaction.scrollHeight;
     }
