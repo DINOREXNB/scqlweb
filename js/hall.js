@@ -175,9 +175,12 @@ function processResponse(data){
                     maxlength[i]=Math.max(maxlength[i],data.out_columns[i].double_data[j].toString().length);
                 }
                 if(data.out_columns[i].int64_data.length!=0){
-                    maxlength[i]=Math.max(maxlength[i],parseInt(data.out_columns[i].int64_data[j])+1);
+                    maxlength[i]=Math.max(maxlength[i],parseInt(Math.log10(data.out_columns[i].int64_data[j]))+1);
                 }
             }
+        }
+        for(var i=0;i<data.out_columns.length;i++){
+            maxlength[i]=Math.max(maxlength[i],data.out_columns[i].name.length);
         }
         for(var j=0;j<data.out_columns.length;j++){
             var temp=padWithSpaces(data.out_columns[j].name,maxlength[j]);
@@ -242,7 +245,7 @@ document.getElementById("exportcsv").addEventListener("click", function() {
         link.click();
         document.body.removeChild(link);
     } else {
-        alert("请先框选要导出的文本！");
+        alert("请先框选要导出的数据！");
     }
 });
 //快捷指令
