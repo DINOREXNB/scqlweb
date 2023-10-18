@@ -1,4 +1,4 @@
-# SCQL Web客户端
+# SCQL Web
 # 功能
 - [x] 用户登入注册
 - [x] 查看/创建/删除数据库/表
@@ -27,7 +27,28 @@
 ### 安全协作查询数据库服务器(SCDB)
 - 使用隐语(secretflow)搭建的SCDB服务器
 - 通过`SCDB`提供的API`submit_and_get`对提交的查询进行联合数据分析，将分析结果返回至Web服务器
+### 配置文件说明
+- `settings.yaml`
+- `mysql`部分为数据库相关配置，用于存储用户的登录账户和密码
+- `server`部分为Web服务器配置
+```yaml
+mysql:
+ host: 'localhost'
+ port: 3306
+ user: 'root'
+ password: 'your_password'
+ database: 'scql'
+
+server:
+ host: "localhost"
+ port: 80
+ location: "your_server_url" 
+```
+### 创建本地数据库
+- 填写`settings.yaml`后，使用`/sql/Userinfo.sql`在`mysql`创建一新数据库用于存储登录用户账户密码，该数据库名称为`scql`
 # 安全性说明
+> 摘自隐语"安全保障和威胁模型"
+
 对于单次查询，`SCQL` 在计算过程中提供满足 `CCL` 权限要求的数据机密性保护。
 
 `SCQL` 不保护查询语句，因为查询语句对 SCQL 所有的参与方公开。`SCQL` 也不保护中间计算结果的大小（维度）信息。
