@@ -120,27 +120,44 @@ app.post('/login',(req,res)=>{
     console.log(body);
     req.session.account=body.account;
     account=body.account;
+
     //检测是否注册
-    if(body.isRegister=='register'){
-      sql_check_isregistered="SELECT * FROM `userinfo` WHERE "+`account=${JSON.stringify(body.account)}`;
-      connectInfo.query(sql_check_isregistered,(err,result,field)=>{
-        if(err){
-          console.log("[SELECT ERROR] - ",err.message);
+    if (body.isRegister == 'register') {
+      const sql_check_isregistered =
+        "SELECT * FROM `userinfo` WHERE " +
+        `account=${JSON.stringify(body.account)}`;
+      connectInfo.query(sql_check_isregistered, (err, result, field) => {
+        if (err) {
+          console.log('[SELECT ERROR] - ', err.message);
           return;
         }
-        if(result.length!=0){
+        if (result.length != 0) {
           res.redirect(`${location}/loginerror.html`);
         }
       });
-      sql_register="INSERT INTO `userinfo` VALUES "+`(${JSON.stringify(body.account)},${JSON.stringify(body.password)})`;
-      connectInfo.query(sql_register,(err,result,field)=>{
-        if(err){
-          console.log("[INSERT ERROR] - ",err.message);
+
+      const sql_register =
+        'INSERT INTO `userinfo` VALUES ' +
+        `(${JSON.stringify(body.account)},${JSON.stringify(body.password)})`;
+      connectInfo.query(sql_register, (err, result, field) => {
+        if (err) {
+          console.log('[INSERT ERROR] - ', err.message);
           return;
         }
         req.session.sign = true;
         res.redirect(`${location}/hall.html`);
       });
+
+      // 将新用户信息添加到uses.json文件中
+      const filePath = 'C:\\Users\\86135\\Desktop\\scql\\examples\\docker-compose\\client\\users.json';
+      let jsonData = fs.readFileSync(filePath);
+      let usersData = JSON.parse(jsonData);
+      
+      usersData[body.account] = { UserName: body.account, Password: body.password };
+
+      jsonData = JSON.stringify(usersData, null, 2);
+      fs.writeFileSync(filePath, jsonData);
+
     }else{
       sql_login="SELECT * FROM `userinfo` WHERE "+`account=${JSON.stringify(body.account)} AND password=${JSON.stringify(body.password)}`;
       connectInfo.query(sql_login,(err,result,filed)=>{
