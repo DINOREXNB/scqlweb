@@ -123,7 +123,7 @@ app.post('/login',(req,res)=>{
 
     //检测是否注册
     if (body.isRegister == 'register') {
-      const sql_check_isregistered =
+      sql_check_isregistered =
         "SELECT * FROM `userinfo` WHERE " +
         `account=${JSON.stringify(body.account)}`;
       connectInfo.query(sql_check_isregistered, (err, result, field) => {
@@ -149,15 +149,15 @@ app.post('/login',(req,res)=>{
       });
 
       // 将新用户信息添加到uses.json文件中
-      const filePath = 'C:\\Users\\86135\\Desktop\\scql\\examples\\docker-compose\\client\\users.json';
+      const filePath = settings.users_file_path;
+
       let jsonData = fs.readFileSync(filePath);
       let usersData = JSON.parse(jsonData);
-      
+            
       usersData[body.account] = { UserName: body.account, Password: body.password };
 
       jsonData = JSON.stringify(usersData, null, 2);
       fs.writeFileSync(filePath, jsonData);
-
     }else{
       sql_login="SELECT * FROM `userinfo` WHERE "+`account=${JSON.stringify(body.account)} AND password=${JSON.stringify(body.password)}`;
       connectInfo.query(sql_login,(err,result,filed)=>{
