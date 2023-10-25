@@ -2,6 +2,7 @@ var account="";
 var ishidden=1;
 let isFirstKeyPressed = false;
 let dbname="";
+let theme_id=1;
 const send=document.getElementById('send');
 const importfile=document.getElementById('import');
 const clear=document.getElementById('clear');
@@ -15,6 +16,7 @@ const ccl=document.getElementById('ccl');
 const showdb=document.getElementById('showdb')
 const exportcsv=document.getElementById('exportcsv');
 const help=document.getElementById('help');
+const theme=document.getElementById('theme');
 fileimport.type = "file";
 fileimport.style.display="none";
 let selectedText="";
@@ -43,7 +45,7 @@ send.addEventListener('click',async()=>{
         edittext = text.replace(/\n/g, "<br>");
         query.value="";
         interaction.innerHTML+=`
-            <code style="color: yellow;">${account}:</code><br>
+            <code class="response">${account}:</code><br>
             <code>${edittext}</code><br>
             <hr>
             <div class="spinner" id="spinner"></div>
@@ -56,8 +58,8 @@ send.addEventListener('click',async()=>{
             dbname=edittext.replace(/;/g,"").replace(/use/g,"").replace(/USE/g,"").replace(/ /g,"").replace(/\n/g,"").replace(/<br>/g,"");
             document.getElementById('spinner').remove();
             interaction.innerHTML+=`
-                <code style="color: yellow;">SCDB:</code><code style="color: #0deb53">[Execution Complete]</code><br>
-                <code>Switch to database:<b>${dbname}</b></code><br>
+                <code class="response">SCDB:</code><code style="color: #0deb53">[Execution Complete]</code><br>
+                <code>Switch to database:<b>${dbname}</b></code><br><hr>
             `;
         }
         interaction.scrollTop=interaction.scrollHeight;
@@ -113,6 +115,25 @@ help.addEventListener('click',()=>{
     var helptext="ctrl/cmd + s：快捷指令\n导出为csv：使用鼠标框选查询数据，点击\"导出为csv\"生成csv文件\n选择sql文件：将提前写好的sql语句快速导入输入框"
     alert(helptext);
 });
+theme.addEventListener('click',()=>{
+    if(theme_id){
+        theme_id=1-theme_id;
+        document.body.style.backgroundColor="#dadada";
+        document.body.style.color="black";
+        interaction.style.backgroundColor="white";
+        document.getElementById('query').style.backgroundColor="white";
+        document.getElementById('query').style.color="black";
+        theme.innerHTML=`<i class="fa fa-moon-o"></i>`
+    }else{
+        theme_id=1-theme_id;
+        document.body.style.backgroundColor="#333";
+        document.body.style.color="white";
+        interaction.style.backgroundColor="#24292e";
+        document.getElementById('query').style.backgroundColor="#24292e";
+        document.getElementById('query').style.color="white";
+        theme.innerHTML=`<i class="fa fa-sun-o"></i>`;
+    }
+});
 ccl.addEventListener('click',()=>{
     interaction.innerHTML+=`
         <div class="spinner" id="spinner"></div>
@@ -162,8 +183,11 @@ async function submit_get(text){
 function processResponse(data){
     if(data.status.code==0){
         interaction.innerHTML+=`
-            <code style="color: yellow;">SCDB:</code><code style="color: #0deb53">[Execution Complete]</code><br>
+            <code class="response">SCDB:</code><code style="color: #0deb53">[Execution Complete]</code><br>
         `;
+        if(data.warnings.length!=0){
+            interaction.innerHTML+=`<code style="color:#ff5c00;">Warning:${data.warnings[0].reason}</code><br>`;
+        }
         maxlength=[];
         for(var i=0;i<data.out_columns.length;i++){
             maxlength.push(0);
@@ -184,7 +208,7 @@ function processResponse(data){
         }
         for(var j=0;j<data.out_columns.length;j++){
             var temp=padWithSpaces(data.out_columns[j].name,maxlength[j]);
-            interaction.innerHTML+=`<code style="color: yellow;"><b>${temp}</b></code>\t`;
+            interaction.innerHTML+=`<code class="response"><b>${temp}</b></code>\t`;
         }
         interaction.innerHTML+="<br>";
         for(var i=0;i<parseInt(data.out_columns[0].shape.dim[0].dim_value);i++){
@@ -213,7 +237,7 @@ function processResponse(data){
         interaction.innerHTML+="<hr>"
     }else{
         interaction.innerHTML+=`
-            <code style="color: yellow;">SCDB:</code><code style="color: red">[Execution Fail]</code><br>
+            <code class="response">SCDB:</code><code style="color: red">[Execution Fail]</code><br>
             <code>${data.status.message}</code><br><hr>
         `;
         interaction.scrollTop=interaction.scrollHeight;

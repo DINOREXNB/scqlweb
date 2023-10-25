@@ -1,6 +1,5 @@
 body{
     background-color: #333; 
-    color: white;
     font-family: Arial, sans-serif;
 }
 
@@ -20,7 +19,7 @@ body{
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    margin: 10px;
+    margin: 8px;
     background-color: #24292e; 
     border: none;
     border-radius: 5px;
@@ -33,16 +32,18 @@ body{
 .btn:hover {
     background-color: #444; 
 }
+.response{
+    color:rgb(221, 221, 34);
+    -webkit-text-stroke: 0.1px #000;
+}
 .container{
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .chatbox{
-    background-color: #333;
     width: 95%;
     height: 500px;
-    color: white;
 }
 
 .interaction{
@@ -94,7 +95,6 @@ body{
     justify-content:space-between;
     height: 100px;
     align-items: center;
-    padding: 3px;
 }
 button {
     height: 100%;
@@ -145,6 +145,3 @@ button {
     margin-left: 20px;
 }
 
-code{
-    white-space: nowrap;
-}
