@@ -1,0 +1,18 @@
+{
+  "alice": {
+    "UserName": "alice",
+    "Password": "some_password"
+  },
+  "bob": {
+    "UserName": "bob",
+    "Password": "another_password"
+  },
+  "root": {
+    "UserName": "root",
+    "Password": "root"
+  },
+  "dinorex": {
+    "UserName": "dinorex",
+    "Password": "woodways"
+  }
+}
