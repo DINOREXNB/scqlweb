@@ -3,11 +3,14 @@ mysql:
  host: 'localhost'
  port: 3306
  user: 'root'
- password: 'WangHan@520'
+ password: 'yt.hcy148.bjyx'
  database: 'scql'
 
 # 服务器配置
 server:
  host: "localhost"
  port: 80
- location: "https://scql.cpolar.top" 
+ location: "http://localhost:80" 
+
+# 用户信息文件
+users_file_path: "C:\\Users\\86135\\Desktop\\scql\\examples\\docker-compose\\client\\users.json"
