@@ -13,19 +13,19 @@
         <h1>scql</h1>
     </div>
     <div class="btn-container">
-        <button class="btn" id="help" title="帮助"><i class="fa fa-question-circle" ></i></button>
-        <button class="btn" id="shortinstruction" title="快捷指令"><i class="fa fa-terminal" ></i></button>
-        <button class="btn" id="history" title="清空历史对话"><i class="fa fa-list-alt" ></i></button>
-        <button class="btn" id="clear" title="清空对话"><i class="fa fa-trash"></i></button>
+        <button class="btn" id="help" title="帮助"><i class="fa fa-question-circle" >&nbsp;help</i></button>
+        <button class="btn" id="shortinstruction" title="快捷指令"><i class="fa fa-terminal" >&nbsp;cmd</i></button>
+        <button class="btn" id="history" title="清空历史对话"><i class="fa fa-list-alt" >&nbsp;dlg</i></button>
+        <button class="btn" id="clear" title="清空对话"><i class="fa fa-trash">&nbsp;clear</i></button>
         <button class="btn" id="exportcsv" title="导出为csv"><i class="fa fa-file">&nbsp;.csv</i></button>
-        <button class="btn" id="logout" title="退出登录"><i class="fa fa-sign-out" ></i></button>
-        <button class="btn" id="theme" title="切换主题"><i class="fa fa-sun-o"></i></button>
+        <button class="btn" id="logout" title="退出登录"><i class="fa fa-sign-out" >&nbsp;exit</i></button>
+        <button class="btn" id="theme" title="切换主题"><i class="fa fa-sun-o">&nbsp;theme</i></button>
     </div>
     <div id="floatingWindow" class="hidden">
         <div id="floatingWindowContent">
-            <h2>快捷指令</h2>
+            <h2 id="floatingWindowContenttitle">快捷指令</h2>
             <button class="btn" id="showdb">列出数据库&nbsp;<i class="fa fa-database"></i></button>
-            <button class="btn" id="ccl">CCL配置</button>
+            <button class="btn" id="ccl">CCL配置<i class="fa fa-cog" ></i></button>
             <button class="btn" id="closeFloatingWindow">关闭</button>
         </div>
     </div>
@@ -39,7 +39,7 @@
                     <div class="mailbox">
                         <button class="btn" id="import" title="选择sql文件"><i class="fa fa-folder-open">.sql</i></button>
                         <textarea name="" id="query" cols="30" rows="10" class="comment" placeholder="Input your query!"></textarea>
-                        <button id="send" class="btn" title="发起查询"><i class="fa fa-paper-plane" ></i></button>
+                        <button id="send" class="btn" title="发起查询"><i class="fa fa-paper-plane" >&nbsp;send</i></button>
                     </div>
                 </div>
             </div>

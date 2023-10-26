@@ -115,7 +115,8 @@ help.addEventListener('click',()=>{
     var helptext="ctrl/cmd + s：快捷指令\n导出为csv：使用鼠标框选查询数据，点击\"导出为csv\"生成csv文件\n选择sql文件：将提前写好的sql语句快速导入输入框"
     alert(helptext);
 });
-theme.addEventListener('click',()=>{
+theme.addEventListener('click',changeTheme);
+async function changeTheme(){
     if(theme_id){
         theme_id=1-theme_id;
         document.body.style.backgroundColor="#dadada";
@@ -123,7 +124,10 @@ theme.addEventListener('click',()=>{
         interaction.style.backgroundColor="white";
         document.getElementById('query').style.backgroundColor="white";
         document.getElementById('query').style.color="black";
-        theme.innerHTML=`<i class="fa fa-moon-o"></i>`
+        theme.innerHTML=`<i class="fa fa-moon-o">&nbsp;theme</i>`
+        document.getElementById('floatingWindow').style.color="black";
+        document.getElementById('floatingWindow').style.backgroundColor="#dadada";
+        localStorage.setItem("theme","1");
     }else{
         theme_id=1-theme_id;
         document.body.style.backgroundColor="#333";
@@ -131,9 +135,13 @@ theme.addEventListener('click',()=>{
         interaction.style.backgroundColor="#24292e";
         document.getElementById('query').style.backgroundColor="#24292e";
         document.getElementById('query').style.color="white";
-        theme.innerHTML=`<i class="fa fa-sun-o"></i>`;
+        theme.innerHTML=`<i class="fa fa-sun-o">&nbsp;theme</i>`;
+        document.getElementById('floatingWindow').style.color="white";
+        document.getElementById('floatingWindow').style.backgroundColor="#333";
+        localStorage.setItem("theme","0");
     }
-});
+
+}
 ccl.addEventListener('click',()=>{
     interaction.innerHTML+=`
         <div class="spinner" id="spinner"></div>
@@ -141,7 +149,16 @@ ccl.addEventListener('click',()=>{
     interaction.scrollTop=interaction.scrollHeight;
     floatingWindow.classList.add("hidden");
     ishidden=1-ishidden;
-    submit_get(`SHOW GRANTS ON demo FOR ${account}`);
+    if(dbname==""){
+        document.querySelector('.spinner').remove();
+        interaction.innerHTML+=`
+        <code class="response">SCDB:</code><code style="color: red">[Execution Fail]</code><br>
+        <code>No database is selected</code><br><hr>
+    `;
+    interaction.scrollTop=interaction.scrollHeight;
+    }else{
+        submit_get(`SHOW GRANTS ON ${dbname} FOR ${account}`);
+    }
 });
 showdb.addEventListener('click',()=>{
     interaction.innerHTML+=`
@@ -302,4 +319,8 @@ document.getElementById('closeFloatingWindow').addEventListener('click',()=>{
 });
 window.onload=async ()=>{
     await getAccount(); 
+    if(localStorage.getItem("theme")!=undefined){
+        theme_id=parseInt(localStorage.getItem("theme"));
+        await changeTheme();
+    }
 };
