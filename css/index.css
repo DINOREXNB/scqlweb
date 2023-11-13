@@ -57,3 +57,7 @@ body {
     color: #333;
     text-decoration: none;
   }
+
+  #pubkey{
+    display: none;
+  }

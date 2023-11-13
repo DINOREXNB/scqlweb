@@ -112,7 +112,7 @@ history.addEventListener('click',()=>{
     alert('在做了在做了（');
 });
 help.addEventListener('click',()=>{
-    var helptext=`<code>ctrl/cmd + s:快捷指令<br>导出为csv:使用鼠标框选查询数据，点击\"导出为csv\"生成csv文件<br>选择sql文件:将提前写好的sql语句快速导入输入框<br>SCQL语法:详见<a href="https://www.secretflow.org.cn/docs/scql/latest/zh-Hans/reference/lang/manual" style="color: rgb(148, 156, 206);">SCQL方言指南</a></code><br><hr>`
+    var helptext=`<code>ctrl/cmd + s:快捷指令<br>导出为csv:使用鼠标框选查询数据，点击\"导出为csv\"生成csv文件<br>选择sql文件:将提前写好的sql语句快速导入输入框<br>SCQL语法:详见<a href="https://www.secretflow.org.cn/docs/scql/latest/zh-Hans/reference/lang/manual" target="_blank" style="color: rgb(148, 156, 206);">SCQL方言指南</a></code><br><hr>`
     // alert(helptext);
     interaction.innerHTML+=helptext;
     interaction.scrollTop=interaction.scrollHeight;

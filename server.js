@@ -150,14 +150,21 @@ app.post('/login',(req,res)=>{
 
       // 将新用户信息添加到uses.json文件中
       const filePath = settings.users_file_path;
-
       let jsonData = fs.readFileSync(filePath);
       let usersData = JSON.parse(jsonData);
-            
       usersData[body.account] = { UserName: body.account, Password: body.password };
-
       jsonData = JSON.stringify(usersData, null, 2);
       fs.writeFileSync(filePath, jsonData);
+      //将新创建公钥写入服务器端authorized_profile.json中
+      const authorized_profile_path=settings.authorized_profile_path;
+      let JSONData_auth=fs.readFileSync(authorized_profile_path);
+      let authJSON=JSON.parse(JSONData_auth);
+      let authData={
+        party_code:body.account,
+        public_key:body.pubkey
+      }
+      authJSON.parties.push(authData);
+      fs.writeFileSync(authorized_profile_path,JSON.stringify(authJSON,null,2));
     }else{
       sql_login="SELECT * FROM `userinfo` WHERE "+`account=${JSON.stringify(body.account)} AND password=${JSON.stringify(body.password)}`;
       connectInfo.query(sql_login,(err,result,filed)=>{
